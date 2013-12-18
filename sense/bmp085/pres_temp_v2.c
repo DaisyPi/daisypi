@@ -40,7 +40,7 @@ Circuit detail:
 #include <linux/i2c-dev.h>
 #include <linux/i2c.h>
 #include <sys/ioctl.h>
-#include "smbus.h" 
+#include "/daisypi/3rdparty/smbus/smbus.h" 
 
 #define BMP085_I2C_ADDRESS 0x77
 
@@ -69,7 +69,7 @@ unsigned int temperature, pressure;
 int bmp085_i2c_Begin()
 {
 	int fd;
-	char *fileName = "/dev/i2c-0";
+	char *fileName = "/dev/i2c-1";
 	
 	// Open port for reading and writing
 	if ((fd = open(fileName, O_RDWR)) < 0)
@@ -234,25 +234,10 @@ unsigned int bmp085_GetTemperature(unsigned int ut)
 
 int main(int argc, char **argv)
 {
-	double alt,alt_anal;
-	double pr;
-//	printf("inceput \n");
 	bmp085_Calibration();
-//	printf("calib_finish   \n");
 	temperature = bmp085_GetTemperature(bmp085_ReadUT());
-//	printf("temp_finish   \n");
 	pressure = bmp085_GetPressure(bmp085_ReadUP());
-//	printf("press_finish   \n");
-	pr=(double)pressure/100-0.3;
-	alt = 44330 * (1-pow((double)(pressure/100+6)/1011.25, 0.190294957));
-	alt_anal = 44330 * (1-pow((double)pressure/101325, 0.190294957));
-//	printf("Temperature         \t%0.4f C\n", ((double)temperature)/10);
-//	printf("Pressure            \t%0.4f hPa\n", ((double)pressure)/100);
-//	printf("Pr2\t%0.4f hPa\n", (double)pr);
-//	printf("Altitude recalib    \t%0.4f m\n", alt);
-//	printf("Altitude analitical \t%0.4f m\n", alt_anal);
-	printf("TEMP_PRESS_ALTC_ALTA %0.4f %0.4f %0.4f %0.4f \n",((double)temperature)/10,((double)pressure)/100,alt,alt_anal);
-//	printf("Final   \n");
+	printf("TEMP_PRESS %0.4f %0.4f\n",((double)temperature)/10,((double)pressure)/100);
 	return 0;
 
 }
