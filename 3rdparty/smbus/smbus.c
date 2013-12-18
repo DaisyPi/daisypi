@@ -22,7 +22,7 @@
 */
 
 #include <errno.h>
-#include "/daisypi/3rdparty/smbus.h"	// NB: Path changed!
+#include "/daisypi/3rdparty/smbus/smbus.h"	// NB: Path changed!
 #include <sys/ioctl.h>
 #include <linux/types.h>
 #include <linux/i2c.h>
