@@ -33,4 +33,4 @@ clean:
 
 distclean:
 	rm -rf adc_read
-	tar czvf adc_read.tar.gz adc_read.c spi_driver.c spi_driver.h Makefile
+	tar czvf mcp3208.tar.gz adc_read.c spi_driver.c spi_driver.h Makefile

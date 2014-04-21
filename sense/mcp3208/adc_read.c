@@ -18,8 +18,8 @@
 * Includes
 ******************************************************************************/
 #include "spi_driver.h"
-	
-	
+
+
 int main(int argc, char *argv[])
 {
 	int fd, ret = 0;
@@ -29,27 +29,27 @@ int main(int argc, char *argv[])
 	fd = open(device, O_RDWR);
 	TEST(fd < 0, "Could not open SPI device");
 
-    spi_open(fd);
-
+	spi_open(fd);
+#ifdef DEBUG_INFO
 	printf("spi device: %s\n", device);
 	printf("spi mode: %d\n", mode);
 	printf("bits per word: %d\n", bits);
 	printf("max speed: %d Hz (%d KHz)\n", speed, speed/1000);
-
+#endif
 	
-	channel = CHANNEL0;  // we use channel 7 here
+	channel = CHANNEL0;  // we use channel 0 here
 	transfer(fd);
-	channel = CHANNEL1;  // we use channel 7 here
+	channel = CHANNEL1;  // we use channel 1 here
 	transfer(fd);
-	channel = CHANNEL2;  // we use channel 7 here
+	channel = CHANNEL2;  // we use channel 2 here
 	transfer(fd);
-	channel = CHANNEL3;  // we use channel 7 here
+	channel = CHANNEL3;  // we use channel 3 here
 	transfer(fd);
-	channel = CHANNEL4;  // we use channel 7 here
+	channel = CHANNEL4;  // we use channel 4 here
 	transfer(fd);
-	channel = CHANNEL5;  // we use channel 7 here
+	channel = CHANNEL5;  // we use channel 5 here
 	transfer(fd);
-	channel = CHANNEL6;  // we use channel 7 here
+	channel = CHANNEL6;  // we use channel 6 here
 	transfer(fd);
 	channel = CHANNEL7;  // we use channel 7 here
 	transfer(fd);

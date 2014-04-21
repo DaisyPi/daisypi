@@ -1,4 +1,4 @@
-#Makefile used for TSL235R chip demo
+#Makefile used for adxl345 chip demo
 
 
 UNAME := $(shell uname -m)
@@ -17,19 +17,21 @@ endif
 
 CCFLAGS = -g $(INCLUDES)
 CCFLAGS_TEST = -Wall $(INCLUDES)
+#BCM2836_LOCATION = ../../daisypi/old_code/shtnew/bcm2835-1.25/src/
+BCM2836_LOCATION = 
 
 all:
-	$(CC) $(INCLUDES) -lrt tsl_read.c -o tsl_read
+	$(CC) $(INCLUDES) adxl_read.c -o adxl345_read
 
 test:
-	$(CC) $(CCFLAGS_TEST) -lrt tsl_read.c -o tsl_read
+	$(CC) $(CCFLAGS_TEST) adxl_read.c -o adxl345_read
 	
 debug:
-	$(CC) $(CCFLAGS) -lrt tsl_read.c -o tsl_read
+	$(CC) $(CCFLAGS) adxl_read.c -o adxl345_read
 	
 clean:
-	rm -rf tsl_read
+	rm -rf adxl345_read
 
 distclean:
-	rm -rf tsl_read
-	tar czvf tsl235r.tar.gz tsl_read.c Makefile
+	rm -rf adxl345_read
+	tar czvf adxl345.tar.gz adxl_read.c Makefile

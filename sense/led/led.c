@@ -1,65 +1,143 @@
+/***************************** FILE HEADER ***********************************/
+/*!
+*  \file    led.c
+*
+*  \brief   <b>Demo application blinks the status LED.</b>\n
+*
+*  \note    Some special notes
+*
+*  \author    Vaduva Jan Alexandru\n
+*             Copyright 2013 Daisy Pi
+*
+*  \version 1.0 2013-08-11 Vaduva Jan Alexandru    created
+*
+*//**************************** FILE HEADER **********************************/
 
-// Author : Plescan Rares
-// Use : Read TSL235R sensor connected to GPIO pin by measuring average time for a defined
-// number of cycles. Output is calculated as kHz or according to docs, in uW/cm2 (illumination).
-//
-// 
-//      gcc -o tsl_read tsl_read.c -lm -lrt -L/usr/local/lib -lwiringPi -lwiringPiDev
-// Illumination measuring, command example :
-//
-//      tsl_read poll_time x_times
-//
-// where poll_time is the polling interval in uSeconds for the autorange procedure
-// and the x_times is the number of itterations for the above polling 
-// After all the itterations are done, an average is computed and printed as final output
-// in a awk-friendly manner :
-//
-//      TSL235READ--poll_time--itterations--avg_value 300000 10 0.193
-//
-//  Warning : the command will take a little longer than poll_time*x_times/1000000 seconds
-//  to complete. For a run as in the following example
-//  ./tsl_read 300000 10
-// is expected to take about 3 seconds plus some processing time.
+/******************************************************************************
+* Includes
+******************************************************************************/
+#include "led.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <stdint.h>
-#include <wiringPi.h>
+/******************************************************************************
+ * Defines
+ *****************************************************************************/
+/* GPIO setup macros. Always use INP_GPIO(x) before
+ using OUT_GPIO(x) or SET_GPIO_ALT(x,y) */
+#define INP_GPIO(g) *(gpio+((g)/10)) &= ~(7<<(((g)%10)*3))
+#define OUT_GPIO(g) *(gpio+((g)/10)) |=  (1<<(((g)%10)*3))
+#define SET_GPIO_ALT(g,a) *(gpio+(((g)/10))) |= (((a)<=3?(a)+4:(a)==4?3:2)<<(((g)%10)*3))
 
+/* sets   bits which are 1 ignores bits which are 0 */
+#define GPIO_SET *(gpio+7)
+/* clears bits which are 1 ignores bits which are 0 */
+#define GPIO_CLR *(gpio+10)
 
-//const int tsl_pin = 7 ;
-const int tsl_pin = 7 ; // GPIO04, pin 7
+//#define DEMO_ENABLED
 
-void main(int argc, char* argv[])
-{
+/******************************************************************************
+ * Local variables
+ *****************************************************************************/
+#ifdef DEMO_ENABLED
+  char pins[] = { 1, 4, 7, 8, 9, 10, 11, 17, 18, 21, 22, 23, 24, 25 };
+  //char pins[] = {25};
+#else
+  char pin = 4;
+#endif
 
-  long timp1, timp2, timp3;
-  int poll_time,itterations;
-  long double s2;
-  float sum;
-  float rb;
-  float ra;
-  float value[1000];
-  int stat;
-  unsigned int cycle1,it;
-  unsigned int autoscale;
-
-// init phase
-  
-  wiringPiSetup () ;
-
-  while (0<1)
+/******************************************************************************
+* Local functions
+******************************************************************************/
+/*!
+ *******************************************************************************
+ *  setup_io
+ *******************************************************************************
+ *
+ *  \brief      <b>Set up a memory regions to access GPIO.\n</b>
+ *
+ *  \author         Vaduva Jan Alexandru
+ *
+ *  \date           2013-08-13
+ ******************************************************************************/
+ void setup_io()
+ {
+  /* open /dev/mem */
+  if ((mem_fd = open("/dev/mem", O_RDWR|O_SYNC) ) < 0) 
   {
-  pinMode (tsl_pin, OUTPUT) ;
-  digitalWrite(tsl_pin, HIGH);
-
-  sleep(2);
-
-  digitalWrite(tsl_pin, LOW);
-  sleep(2);
-
- 
+    printf("can't open /dev/mem \n");
+    exit(-1);
   }
- 
+
+  /* mmap GPIO */
+  gpio_map = mmap(
+      NULL,                 // Any adddress in our space will do
+      BLOCK_SIZE,           // Map length
+      PROT_READ|PROT_WRITE, // Enable reading & writting to mapped memory
+      MAP_SHARED,           // Shared with other processes
+      mem_fd,               // File to map
+      GPIO_BASE             // Offset to GPIO peripheral
+      );
+
+  close(mem_fd);
+
+  if (gpio_map == MAP_FAILED) 
+  {
+    printf("mmap error %d\n", (int)gpio_map);
+    exit(-1);
+  }
+
+  gpio = (volatile unsigned *)gpio_map;
+}
+
+
+int main(int argc, char **argv)
+{
+#ifdef DEMO_ENABLED
+  int g,rep;
+#endif
+
+  /* Set up gpi pointer for direct register access */
+  setup_io();
+#ifndef DEMO_ENABLED  
+  /* Set GPIO pin 4 to output */
+  INP_GPIO(pin); 
+  OUT_GPIO(pin);
+#else
+  /* Set all exposed GPIO pins to output */
+  for (g = 0; g <= 32; g++)
+  {
+    if( ((1<<g) & 0x3e6cf93) != 0)
+    {
+      INP_GPIO(g);
+      OUT_GPIO(g);
+    }
+  }
+  GPIO_CLR = 0x3e6cf93; //clear all output pins
+#endif
+
+#ifdef DEMO_ENABLED
+  while (1)
+  {
+    for (rep = 0; rep < 14; rep++)
+    { 
+      GPIO_SET = 1<<pins[rep];
+      printf("Set pin: %d\n", pins[rep]);
+      sleep(1);
+      GPIO_CLR = 1<<pins[rep];
+      printf("Clear pin: %d\n", pins[rep]);
+      sleep(1);
+    }
+  }
+#else
+  while (1)
+  {
+    GPIO_SET = 1<<pin;
+    printf("Set pin: %d\n", pin);
+    sleep(1);
+    GPIO_CLR = 1<<pin;
+    printf("Clear pin: %d\n", pin);
+    sleep(1);
+  }
+#endif
+
+  return 0;
 }

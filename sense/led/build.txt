@@ -1,1 +1,0 @@
-gcc -o led led.c -lm -lrt -L/usr/local/lib -lwiringPi -lwiringPiDev

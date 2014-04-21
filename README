@@ -1,7 +1,19 @@
 DaisyPi_HA
 ==========
 
-Echipa Daisy Pi
+The implementation on this git repository tries to be a conversion 
+of the old available code using bash and c language and trying to 
+offer a better performance by avoiding the use of third party 
+libraries.
+
+The old code was available thanks to Rares Plescan. 
+Thanks to him we had the stepping stone for the Daisy Pi project 
+and we can continue the search for offering better performances for 
+our product, and even different implementation for the same device.
+
+
+Daisy Pi team
+=============
 
 Podiuc Raluca Elena
 Stefanica Iulia

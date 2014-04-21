@@ -1,0 +1,50 @@
+RaspberryPi account: pi - pi_123
+
+Urgent:
+    change exacutable names for mcp, led and tsl accordingly.
+        Example:mcp3208_read, led_read, tsl235r_read.
+    all the other ones should have the same pattern
+    a similar makefile target like archivate/delarchive should be created
+        but it will only contain an archive with execs from apps.
+
+Done list:
+    mcp3208 - c driver (uses spidev).
+    ePIR    - bash code (faster then the previous python implementation).
+    bmp085  - c code for bmp085 board updated format.
+    led     - updated code with native c implemenation.
+    adxl345 - offer the same design to Rares`s version because is better.
+    adxl345 - tried  a new implementation to obtain a better performance. Remain as backup.
+    sht11   - replace bcm2835 library with native code.
+    tsl235r - replace bcm2835 library with native code.
+
+TODO list:
+    adxl345 - test both implementations.
+    Replace bcm2835 library with native code.
+    Test all the application on DaisyPi.
+    Format the file name correspondingly.
+
+Obsolete list:
+    ePIR    - became obsolete because the ePIR is not as easy to get.
+            - maybe a C code will be written for him for better performance.
+
+Information:
+    adxl345 - started working on it but I have some problems. Not sure if it is a hardware or a software problem.
+            - meanwhile I will start porting Rares`s version.
+            - believe it is a hardware problem because also Rares`s version did not work.
+    Working on autotools implementation for the projects:
+            - it proved to be not as easy to understand for further development
+    Proposed a new format based on a master Makefile:
+            - include all the necessary modules into the MODULE variable
+            - new modules are added very easy and they only need a Makefile with the follwong targets:
+                    -- all
+                    -- clean
+                    -- distclean
+            - all the new added modules can inspire from already existing modules
+
+Autotools info:
+	autoscan
+	mv configure.scan configure.ac
+	autoreconf -vfi
+	touch NEWS AUTHORS ChangeLog
+	./configure
+	make

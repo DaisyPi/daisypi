@@ -43,35 +43,33 @@
 #define CHANNEL7 0x07C000   // Channel 7
 
 #define TEST(assertion, call_description) 	\
-	do { 									\
-		if (assertion) {					\
-			fprintf (stderr, "(%s, %d): ", 	\
-				__FILE__, __LINE__);		\
-			perror(call_description);		\
-			exit(EXIT_FAILURE);				\
-		}									\
-	} while (0)
+ do { 									\
+ 	if (assertion) {					\
+ 		fprintf (stderr, "(%s, %d): ", 	\
+ 			__FILE__, __LINE__);		\
+ 		perror(call_description);		\
+ 		exit(EXIT_FAILURE);				\
+ 	}									\
+ } while (0)
 
 /******************************************************************************
  * Local variables
  *****************************************************************************/
-//static const char *device = "/dev/spidev0.0";
-static const char *device = "/dev/spidev0.0";
-static uint8_t mode = SPI_MODE_0;
-static uint8_t bits = 8;
-//static uint32_t speed = 1000000;
-static uint32_t speed = 10000;
-static uint16_t delay;
+ static const char *device = "/dev/spidev0.0";
+ static uint8_t mode = SPI_MODE_0;
+ static uint8_t bits = 8;
+ static uint32_t speed = 1000000;
+ static uint16_t delay;
 
-uint32_t channel;
+ uint32_t channel;
 
 /******************************************************************************
  * Forward declaration
  *****************************************************************************/
-void print_usage(const char *prog);
-void parse_opts(int argc, char *argv[]);
-void spi_open(int fd);
-void transfer(int fd);
+ void print_usage(const char *prog);
+ void parse_opts(int argc, char *argv[]);
+ void spi_open(int fd);
+ void transfer(int fd);
 
 
 #endif /* __spiDriverh */

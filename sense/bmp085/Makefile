@@ -1,7 +1,37 @@
-# Makefile for BMP085 pressure sensor binaries ( using native I2C ) for version 1 and version 2 of the Rapsberry Pi board.
+#Makefile used for BMP085 chip demo
 
-    all:
-	gcc -lm -Wall -o pres_temp_v2.o /new_push/daisypi/3rdparty/smbus/smbus.c ./pres_temp_v2.c
-	gcc -lm -Wall -o pres_temp_v1.o /new_push/daisypi/3rdparty/smbus/smbus.c ./pres_temp_v1.c
-    clean:
-	rm -rf *o
+
+UNAME := $(shell uname -m)
+
+ifeq ($(UNAME), x86_64)
+	CC := arm-none-linux-gnueabi-gcc
+	INCLUDES := -I ../../RaspberryPi_LinuxKernel/include
+else
+	CC := gcc
+	INCLUDES :=
+endif
+ifeq ($(UNAME), x86)
+	CC := arm-none-linux-gnueabi-gcc
+	INCLUDES := -I ../../RaspberryPi_LinuxKernel/include
+endif
+
+CCFLAGS = -g $(INCLUDES)
+CCFLAGS_TEST = -Wall $(INCLUDES)
+LDFLAGS = -lm
+
+
+all:
+	$(CC) $(INCLUDES) $(LDFLAGS) smbus.c bmp_read.c -o bmp_read
+
+test:
+	$(CC) $(CCFLAGS_TEST) $(LDFLAGS) smbus.c bmp_read.c -o bmp_read
+
+debug:
+	$(CC) $(CCFLAGS) $(LDFLAGS) smbus.c bmp_read.c -o bmp_read
+
+clean:
+	rm -rf bmp_read
+
+distclean:
+	rm -rf bmp_read
+	tar czvf bmp085.tar.gz bmp_read.c smbus.c smbus.h Makefile

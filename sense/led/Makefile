@@ -1,4 +1,4 @@
-#Makefile used for TSL235R chip demo
+#Makefile used for status LED demo
 
 
 UNAME := $(shell uname -m)
@@ -15,21 +15,22 @@ ifeq ($(UNAME), x86)
 	INCLUDES := -I ../../RaspberryPi_LinuxKernel/include
 endif
 
-CCFLAGS = -g $(INCLUDES)
-CCFLAGS_TEST = -Wall $(INCLUDES)
+CCFLAGS := -g $(INCLUDES)
+CCFLAGS_TEST := -Wall $(INCLUDES)
+
 
 all:
-	$(CC) $(INCLUDES) -lrt tsl_read.c -o tsl_read
+	$(CC) $(INCLUDES) led.c -o led
 
 test:
-	$(CC) $(CCFLAGS_TEST) -lrt tsl_read.c -o tsl_read
+	$(CC) $(CCFLAGS_TEST) led.c -o led
 	
 debug:
-	$(CC) $(CCFLAGS) -lrt tsl_read.c -o tsl_read
+	$(CC) $(CCFLAGS) led.c -o led
 	
 clean:
-	rm -rf tsl_read
+	rm -rf led
 
 distclean:
-	rm -rf tsl_read
-	tar czvf tsl235r.tar.gz tsl_read.c Makefile
+	rm -rf led
+	tar czvf led.tar.gz led.c led.h Makefile
